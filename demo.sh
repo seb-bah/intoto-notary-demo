@@ -28,7 +28,7 @@ echo 'Checking that notary is up'
     docker ps 
 
 
-echo "Generating a thin bundle using `porter`"
+echo "Generating a bundle using `porter`"
     cd $cwd
     
     rm -rf helloworld
@@ -40,8 +40,9 @@ echo "Generating a thin bundle using `porter`"
     porter archive --reference sebbyii/test-bundle:v0.0.1 $cwd/porter-bundle.tgz
     #porter publish
 
-echo "Signing Bundle"
+echo "Signing Bundle and push trust data to local notary server"
     cd $cwd
     signy --tlscacert=/Users/scottbuckel/go/src/github.com/theupdateframework/notary/cmd/notary/root-ca.crt --server=https://localhost:4443 --log=debug sign --thick porter-bundle.tgz docker.io/sebbyii/test-bundle:v1
 
-    signy --tlscacert=/Users/scottbuckel/go/src/github.com/theupdateframework/notary/cmd/notary/root-ca.crt --server=https://localhost:4443 --log=debug verify --thick --local porter-bundle.tgz docker.io/sebbyii/test-bundle:v1
+echo "Verifying Bundle"
+    signy --tlscacert=/Users/scottbuckel/go/src/github.com/theupdateframework/notary/cmd/notary/root-ca.crt --server=https://localhost:4443 --log=debug verify --thick --local porter-bundle.tgz docker.io/sebbyii/test-bundle:v1    
